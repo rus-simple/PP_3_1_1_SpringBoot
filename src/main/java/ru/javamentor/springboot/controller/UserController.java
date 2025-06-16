@@ -15,7 +15,6 @@ import java.util.List;
 @RequestMapping("/users") // Обработка запросов, начинающихся с /users
 public class UserController {
 
-
     private final UserService userService;
     // Внедрение сервиса через конструктор для работы с пользователями
     public UserController(UserService userService) {
@@ -28,15 +27,10 @@ public class UserController {
      */
     @GetMapping
     public String listUsers(Model model) {
-        // Создаем таблицу пользователей, если она еще не создана
-        userService.createUsersTable();
-
         // Получаем список всех пользователей из базы данных
         List<User> users = userService.getAllUsers();
-
         // Передаем список пользователей в модель для отображения в шаблоне
         model.addAttribute("users", users);
-
         // Возвращаем имя шаблона (например, users.html)
         return "users";
     }
@@ -48,6 +42,7 @@ public class UserController {
     @PostMapping("/add")
     public String saveUser(@ModelAttribute User user) {
         userService.saveUser(user);
+        // Перенаправляем обратно на страницу со списком пользователей
         return "redirect:/users";
     }
 
@@ -56,9 +51,7 @@ public class UserController {
      */
     @PostMapping("/delete")
     public String deleteUser(@RequestParam long id) {
-        // Удаляем пользователя по его ID
         userService.removeUserById(id);
-        // Перенаправляем обратно на страницу со списком пользователей
         return "redirect:/users";
     }
 
@@ -69,12 +62,6 @@ public class UserController {
     @PostMapping("/edit")
     public String editUser(@ModelAttribute User user) {
         userService.updateUser(user);
-        return "redirect:/users";
-    }
-
-    @PostMapping("/clean")
-    public String cleanUsersTable() {
-        userService.cleanUsersTable();
         return "redirect:/users";
     }
 }

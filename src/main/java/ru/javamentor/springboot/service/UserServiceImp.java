@@ -2,6 +2,7 @@ package ru.javamentor.springboot.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javamentor.springboot.dao.UserDao;
 import ru.javamentor.springboot.model.User;
 import java.util.ArrayList;
@@ -11,31 +12,22 @@ import java.util.List;
 public class UserServiceImp implements UserService {
 
     @Autowired
-    private UserDao userdao;
+    private UserDao userDao;
 
-    public void createUsersTable() {
-        this.userdao.createUsersTable();
-    }
-
-    public void dropUsersTable() {
-        this.userdao.dropUsersTable();
-    }
-
+    @Transactional
     public void saveUser(User user) {
-        this.userdao.saveUser(user);
+        this.userDao.saveUser(user);
     }
 
+    @Transactional
     public User removeUserById(long id) {
-        this.userdao.removeUserById(id);
+        this.userDao.removeUserById(id);
         return null;
     }
 
+    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
-        return this.userdao.getAllUsers();
-    }
-
-    public void cleanUsersTable() {
-        this.userdao.cleanUsersTable();
+        return this.userDao.getAllUsers();
     }
 
     private final List<User> users = new ArrayList<>();
@@ -43,12 +35,8 @@ public class UserServiceImp implements UserService {
     public UserServiceImp() {
     }
 
-    @Override
-    public User getUserById(long id) {
-        return userdao.getUserById(id);
-    }
-
+    @Transactional
     public void updateUser(User user) {
-        userdao.updateUser(user);
+        userDao.updateUser(user);
     }
 }
